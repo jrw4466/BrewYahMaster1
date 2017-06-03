@@ -10,3 +10,7 @@
 .footer{
 	text-align:center;
 }
+
+#breweryInfo {
+	display: none;
+}

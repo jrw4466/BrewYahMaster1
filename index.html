@@ -22,6 +22,8 @@
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
     <script src="../../assets/js/ie-emulation-modes-warning.js"></script>
 
+    <script src="https://www.gstatic.com/firebasejs/4.1.1/firebase.js"></script>
+
   </head>
 
   <body>
@@ -55,7 +57,7 @@
             <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
           </p>
           <div class="jumbotron">
-            <h1>BrewYah!</h1>
+            <h1>Welcome to BrewYah!</h1>
             <p>Look no further for your weekend adventures. Having trouble finding the nearest brewery near you? Search for one close to you by putting in your city location in the search bar below!</p>
           </div>
           <div class="row">
@@ -78,50 +80,32 @@
               </div>
             </div>
             
-            <div class="col-xs-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
-            <div class="col-xs-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
-            <div class="col-xs-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
-            <div class="col-xs-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
-            <div class="col-xs-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
-            <div class="col-xs-6 col-lg-4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
-            </div><!--/.col-xs-6.col-lg-4-->
+            <div class="col-xs-6 col-lg-4" id = "initialInfo">
+              <h2>Search your City and State</h2>
+              <p>We will display the nearest breweries in your city within a ### mile radius! </p>
+          </div><!--/row-->
+          <div class="col-xs-6 col-lg-4" id = "breweryInfo">
+              
+            <div id = "breweryName"></div>
+
+            <form>
+              <div class="form-group">
+                <p>Write a Review</p>
+                <input type="text" class="form-control" id="reviewText">
+                <input id = "reviewBtn" type = "submit" value = "Submit">
+              </div>
+            </form>
+            <div  ="breweryReview"></div>
           </div><!--/row-->
         </div><!--/.col-xs-12.col-sm-9-->
       </div><!--/row-->
-      </div>
-      
+
       <hr>
       <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL1B97DDVFjIxxJ1MiQdM6GY68WmrSaRo&callback=initMap">
       </script>
-      
-      <div class="footer">
-        <footer>
+      <footer>
         <p>&copy; BrewYah Members: Jake | Chris | Dominic | Sam | Sarah</p>
       </footer>
-      </div>
 
     </div><!--/.container-->
 
@@ -129,6 +113,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script src="assets/javascript/app.js"></script>
   </body>
