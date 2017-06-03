@@ -15,26 +15,20 @@ var state = "";
 //the ID for each marker in firebase
 var currentMarkerId;
 
-function locationInfo() {
+function getBreweryLocations() {
+            var queryURL = "http://127.0.0.1:3000/breweries";
 
-    var longitute = "";
-    var ladittude = "";
-
-    var queryURL = "https://api.brewerydb.com/v2/locations/?name&key=52840d61aed0d4d4dc14a975bf3092c4&format=json";
-
-    $.ajax({
-        url: queryURL,
-        methotd: "GET"
-    })
-
-    .done(function(response) {
-
-        console.log(queryURL);
-        console.log(response.data);
-    })
-}
-
-locationInfo();
+           return $.ajax({
+               url: queryURL,
+                method: "GET",
+           });
+        }
+        // https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
+        var promise = getBreweryLocations();
+        promise.success(function(data) {
+            var data_object = JSON.parse(data);
+           console.log(data_object.data);
+       });
 
 var markers;
 
