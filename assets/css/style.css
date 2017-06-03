@@ -1,0 +1,12 @@
+/*height and width on the container of the map (the div) is required of the map won't show up. this was a pain to find out */
+#map {
+	height: 400px;
+    width: 100%;
+}
+#content {
+    margin-top: 100px;
+    text-align: center;
+}
+.footer{
+	text-align:center;
+}
