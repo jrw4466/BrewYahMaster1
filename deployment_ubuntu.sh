@@ -14,3 +14,6 @@ cd /src
 git clone https://github.com/jrw4466/BrewYahMaster1.git
 cd BrewYahMaster1/
 npm i # i == install
+
+cd
+sudo npm install -g pm2
