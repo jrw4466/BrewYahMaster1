@@ -21,15 +21,14 @@ app.get('/', function(req, res, next) {
 
 app.get('/breweries', function(req, res, next) {
     // https://stackoverflow.com/questions/8515872/simple-api-calls-with-node-js-and-express
-    // request(BREW_API_URL, function (error, response, body) {
-    //     if (!error && response.statusCode == 200) {
-    //       // https://stackoverflow.com/questions/19696240/proper-way-to-return-json-using-node-or-express
-    //       res.json(body);
-    //   } else {
-    //       res.send(error);
-    //   }
-    // });
-    res.send('hi');
+    request(BREW_API_URL, function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+          // https://stackoverflow.com/questions/19696240/proper-way-to-return-json-using-node-or-express
+          res.json(body);
+      } else {
+          res.send(error);
+      }
+    });
 })
 
 // required if you wanna serve a file
