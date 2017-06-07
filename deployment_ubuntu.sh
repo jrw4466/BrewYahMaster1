@@ -9,7 +9,7 @@ bash nodesource_setup.sh
 # fixes a possible error when running nodesource_setup
 dpkg --configure -a
 # dpkg is another package manage for debian based linux (like ubuntu, kubuntu, etc)
-apt-get install nodejs nodejs-legacy npm build-essential -y
+apt-get install nodejs nodejs-legacy npm build-essential nginx -y
 cd /src
 git clone https://github.com/jrw4466/BrewYahMaster1.git
 cd BrewYahMaster1/
@@ -17,3 +17,13 @@ npm i # i == install
 
 cd
 sudo npm install -g pm2
+pm2 startup systemd
+pm2 save
+
+
+cp nginx_default_config /etc/nginx/sites-available/default
+# check it
+sudo nginx -t
+# RESULT=$(sudo nginx -t 2>&1)
+# TARGET="test is successful"
+sudo systemctl restart nginx
