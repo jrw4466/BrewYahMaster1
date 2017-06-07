@@ -12,8 +12,38 @@ var database = firebase.database();
 
 var city = "";
 var state = "";
+var centerLat = 30.267;
+var centerLong = -97.743;
 //the ID for each marker in firebase
 var currentMarkerId;
+
+$("#locationBtn").on("click",function(event){
+    event.preventDefault();
+
+    city = $("#city").val().trim();
+    state = $("#state").val().trim();
+
+    var googleURL = "https://maps.googleapis.com/maps/api/geocode/json?address=" + city + "," + state + "&key=AIzaSyAL1B97DDVFjIxxJ1MiQdM6GY68WmrSaRo"
+
+    $.ajax({
+        url: googleURL,
+        method: "GET"
+    }).done(function(responseGoogle){
+        var googleResults = responseGoogle;
+        console.log(googleResults);
+        //console.log(googleResults.results[0].geometry.location.lat);
+
+        centerLat = parseFloat(googleResults.results[0].geometry.location.lat);
+        centerLong = parseFloat(googleResults.results[0].geometry.location.lng);
+
+        console.log(centerLat);
+        console.log(centerLong);
+
+        initMap();
+    })
+})
+
+
 
 function getBreweryLocations() {
             var queryURL = "http://127.0.0.1:3000/breweries";
@@ -72,14 +102,14 @@ function initMap(locations) {
         return marker
     }
 
-    var center_of_austin = {
-        lat: 30.30,
-        lng: -97.743
+    var center_of_map = {
+        lat: centerLat,
+        lng: centerLong
     };
 
     var map = new google.maps.Map(document.getElementById('map'), {
         zoom: 10,
-        center: center_of_austin
+        center: center_of_map
     });
 
     markers = brewery_locations.map(function(location) {
@@ -156,7 +186,7 @@ function initMap(locations) {
                 // }  
             }
         );
-    })
+    });
 }
 
 // google.maps.event.addDomListener(window, 'load', initMap);

@@ -8,8 +8,11 @@ var server = require('http').createServer(app);
 app.use(cors());
 app.options('*', cors());
 
+/* Jake Added */
+var centerLat = 30.267;
+var centerLong = -97.743;
 
-var BREW_API_URL = "https://api.brewerydb.com/v2/search/geo/point/?lat=30.267&lng=-97.743&key=52840d61aed0d4d4dc14a975bf3092c4&format=json";
+var BREW_API_URL = "https://api.brewerydb.com/v2/search/geo/point/?lat=" + centerLat + "&lng=" + centerLong + "&key=52840d61aed0d4d4dc14a975bf3092c4&format=json";
 
 
 app.get('/', function(req, res, next) {
@@ -25,7 +28,7 @@ app.get('/breweries', function(req, res, next) {
         if (!error && response.statusCode == 200) {
           // https://stackoverflow.com/questions/19696240/proper-way-to-return-json-using-node-or-express
           res.json(body);
-      } else {
+      } else { 
           res.send(error);
       }
     });
