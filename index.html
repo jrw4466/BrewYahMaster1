@@ -23,10 +23,44 @@
 
     <script src="https://www.gstatic.com/firebasejs/4.1.1/firebase.js"></script>
 
+   <style>
+
+#nav {
+    background: #3d3c3c;
+}
+.navbar-inverse .navbar-brand {
+    color: #ffffff;
+}
+.navbar-inverse .navbar-nav>li>a {
+    color: #ffffff;
+}
+body {
+  font-family: Roboto;
+  background-image: url(assets/images/wood.jpeg);
+}
+h1,h2{
+  font-family: Copperplate Gothic Light;
+  color: black;
+}
+.jumbotron {
+  background: #ffffff;
+}
+.panel-default>.panel-heading {
+  background: #ffffff;
+}
+.footer{
+    color: white;
+    height: 43px;
+    background: #3d3c3c;
+    padding: 12px;
+    margin-top: 10px;
+}
+  </style>
+
   </head>
 
   <body>
-    <nav class="navbar navbar-fixed-top navbar-inverse">
+    <nav id="nav" class="navbar navbar-fixed-top navbar-inverse">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -102,9 +136,12 @@
       <hr>
       <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL1B97DDVFjIxxJ1MiQdM6GY68WmrSaRo&callback=initMap">
       </script>
+
+      <div class="footer">
       <footer>
         <p>&copy; BrewYah Members: Jake | Chris | Dominic | Sam | Sarah</p>
       </footer>
+      </div>
 
     </div><!--/.container-->
 

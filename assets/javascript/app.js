@@ -39,7 +39,8 @@ $("#locationBtn").on("click",function(event){
         console.log(centerLat);
         console.log(centerLong);
 
-        initMap();
+        initMap()
+        getBreweryLocations();
     })
 })
 
@@ -54,13 +55,22 @@ function getBreweryLocations() {
            });
         }
         // https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
+        
+        // var promise = function getBreweryLocations
         var promise = getBreweryLocations();
+        // function getBreweryLocations success runs function data to parse into data object
         promise.success(function(data) {
             var data_object = JSON.parse(data);
            console.log(data_object.data);
+           console.log(promise);
        });
 
 var markers;
+
+/* Jake Stuff */
+
+//for (var i=0; i < results.length; i++) {
+//}
 
 // grab these from api
 var brewery_locations = [{
