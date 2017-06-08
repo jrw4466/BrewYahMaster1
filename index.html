@@ -42,19 +42,68 @@ h1,h2{
   font-family: Copperplate Gothic Light;
   color: black;
 }
+p{
+  color: black;
+}
 .jumbotron {
   background: #ffffff;
 }
 .panel-default>.panel-heading {
   background: #ffffff;
 }
-.footer{
-    color: white;
-    height: 43px;
-    background: #3d3c3c;
-    padding: 12px;
-    margin-top: 10px;
+div.panel.panel-default{
+  padding: 10px;
 }
+#breweryName{
+  color: black;
+}
+#searchH2{
+  color: black;
+}
+.footer{
+  color: white;
+  height: 43px;
+  background: #3d3c3c;
+  padding: 12px;
+  margin-top: 20px;
+}
+p.footer{
+  color: white;
+}
+@media only screen and (max-width: 1200px) {
+    #initialInfo{
+      width: 100%;
+    }
+    #breweryInfo {
+    display: none;
+    width: 100%;
+    }
+@media only screen and (max-width: 980px) {
+    #initialInfo{
+      width: 100%;
+    }
+    #breweryInfo {
+    display: none;
+    width: 100%;
+    }
+@media only screen and (max-width: 768px) {
+    #initialInfo{
+      width: 100%;
+    }
+    #breweryInfo {
+    display: none;
+    width: 100%;
+    }
+    @media only screen and (max-width: 640px) {
+    #initialInfo{
+      width: 100%;
+    }
+    #breweryInfo {
+    display: none;
+    width: 100%;
+    }
+
+
   </style>
 
   </head>
@@ -114,11 +163,13 @@ h1,h2{
             </div>
             
             <div class="col-xs-6 col-lg-4" id = "initialInfo">
-              <h2>Search your City and State</h2>
+              <div class="panel panel-default">
+              <h2 id="searchH2">Search your City and State</h2>
               <p>We will display the nearest breweries in your city within a ### mile radius! </p>
+              </div>
           </div><!--/row-->
           <div class="col-xs-6 col-lg-4" id = "breweryInfo">
-              
+           <div class="panel panel-default" >
             <div id = "breweryName"></div>
 
             <form>
@@ -128,20 +179,23 @@ h1,h2{
                 <input id = "reviewBtn" type = "submit" value = "Submit">
               </div>
             </form>
-            <div  id ="breweryReview"></div>
+            <div  id ="breweryReview" style="overflow:scroll; height:287px;"></div>
+            </div>
+            </div><!--Panel body-->
           </div><!--/row-->
         </div><!--/.col-xs-12.col-sm-9-->
+
       </div><!--/row-->
 
-      <hr>
+  
       <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAL1B97DDVFjIxxJ1MiQdM6GY68WmrSaRo&callback=initMap">
       </script>
 
-      <div class="footer">
+      
       <footer>
-        <p>&copy; BrewYah Members: Jake | Chris | Dominic | Sam | Sarah</p>
+        <p class="footer">&copy; BrewYah Members: Jake | Chris | Dominic | Sam | Sarah</p>
       </footer>
-      </div>
+   
 
     </div><!--/.container-->
 
