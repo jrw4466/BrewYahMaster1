@@ -14,8 +14,15 @@ var city = "";
 var state = "";
 var centerLat = 30.267;
 var centerLong = -97.743;
+
+var brewery_locations = [{}];
+console.log(brewery_locations);
+
 //the ID for each marker in firebase
 var currentMarkerId;
+var rating;
+
+var starRating = document.getElementById("starRating").cloneNode(true);
 
 $("#locationBtn").on("click",function(event){
     event.preventDefault();
@@ -39,8 +46,9 @@ $("#locationBtn").on("click",function(event){
         console.log(centerLat);
         console.log(centerLong);
 
-        initMap()
+        initMap();
         getBreweryLocations();
+        
     })
 })
 
@@ -62,18 +70,46 @@ function getBreweryLocations() {
         promise.success(function(data) {
             var data_object = JSON.parse(data);
            console.log(data_object.data);
-           console.log(promise);
+           //console.log(promise);
+
+           var results = data_object.data;
+           //console.log(results);
+           for (var i=0; i < results.length; i++) {
+                console.log(results[i].latitude);
+                console.log(results[i].longitude);
+                console.log(results[i].name);
+                console.log(results[i].brewery.website);
+                //console.log(results[i].brewery.images.large);
+
+                /*var newObject = {
+                    location: {
+                        lat: results[i].latitude,
+                        lng: results[i].longitude
+                    },
+
+                    name: results[i].name,
+                    url: results[i].brewery.website
+                };
+
+                brewery_locations.push(newObject[i]); */
+
+                brewery_locations[i] = {
+                    location: {
+                        lat: results[i].latitude,
+                        lng: results[i].longitude
+                    },
+
+                    name: results[i].name,
+                    url: results[i].brewery.website
+                };
+            };
        });
 
 var markers;
 
-/* Jake Stuff */
-
-//for (var i=0; i < results.length; i++) {
-//}
 
 // grab these from api
-var brewery_locations = [{
+brewery_locations = [{
     location: {
         lat: 30.30,
         lng: -97.643
@@ -144,6 +180,13 @@ function initMap(locations) {
                 $("#breweryInfo").css({
                     "display": "initial"
                 });
+
+                 $(".rating").on("click", function(){
+                   rating = $(".rating :checked").val();
+                   console.log(rating);
+
+                })
+
                 // turns off previous click event to not have repetitive values 
                 $("#reviewBtn").off('click');
                 $("#reviewBtn").on("click", function(event) {
@@ -153,7 +196,8 @@ function initMap(locations) {
 
                     
                     var reviewDB = {
-                        review: reviewText
+                        review: reviewText,
+                        rating: rating
                     };
                     //the .child lets you add branches 
                     database.ref()
@@ -162,7 +206,7 @@ function initMap(locations) {
                         .push(reviewDB)
                         //once data is pushed to firebase, it appends the newest review to #breweryReview
                         .then(function() {
-                            $("#breweryReview").append(reviewText + "<br>");
+                            $("#breweryReview").append(starRating + "<p>" + "\"" + reviewText + "\"" + "</p>" + "<br>");
                         })
 
                     $("#reviewText").val("");
@@ -182,7 +226,7 @@ function initMap(locations) {
                         var reviews = Object.values(data)
                         //forEach goes through the reviews array and runs the function in each of the items in reviews
                         reviews.forEach(function(reviewObj) {
-                            $("#breweryReview").append(reviewObj.review + "<br>");
+                            $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
                         })
                         
                     })
@@ -197,6 +241,7 @@ function initMap(locations) {
             }
         );
     });
+
 }
 
 // google.maps.event.addDomListener(window, 'load', initMap);
