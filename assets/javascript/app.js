@@ -14,6 +14,10 @@ var city = "";
 var state = "";
 var centerLat = 30.267;
 var centerLong = -97.743;
+
+var brewery_locations = [{}];
+console.log(brewery_locations);
+
 //the ID for each marker in firebase
 var currentMarkerId;
 
@@ -39,8 +43,9 @@ $("#locationBtn").on("click",function(event){
         console.log(centerLat);
         console.log(centerLong);
 
-        initMap()
+        initMap();
         getBreweryLocations();
+        
     })
 })
 
@@ -62,18 +67,46 @@ function getBreweryLocations() {
         promise.success(function(data) {
             var data_object = JSON.parse(data);
            console.log(data_object.data);
-           console.log(promise);
+           //console.log(promise);
+
+           var results = data_object.data;
+           //console.log(results);
+           for (var i=0; i < results.length; i++) {
+                console.log(results[i].latitude);
+                console.log(results[i].longitude);
+                console.log(results[i].name);
+                console.log(results[i].brewery.website);
+                //console.log(results[i].brewery.images.large);
+
+                /*var newObject = {
+                    location: {
+                        lat: results[i].latitude,
+                        lng: results[i].longitude
+                    },
+
+                    name: results[i].name,
+                    url: results[i].brewery.website
+                };
+
+                brewery_locations.push(newObject[i]); */
+
+                brewery_locations[i] = {
+                    location: {
+                        lat: results[i].latitude,
+                        lng: results[i].longitude
+                    },
+
+                    name: results[i].name,
+                    url: results[i].brewery.website
+                };
+            };
        });
 
 var markers;
 
-/* Jake Stuff */
-
-//for (var i=0; i < results.length; i++) {
-//}
 
 // grab these from api
-var brewery_locations = [{
+/*brewery_locations = [{
     location: {
         lat: 30.30,
         lng: -97.643
@@ -99,15 +132,15 @@ var brewery_locations = [{
         lng: -97.443
     },
     url: 'one_of_your_page.html'
-}, ]
+}, ]*/
 
 function initMap(locations) {
-    function addMarker(dataset, map_object) {
+    function addMarker(brewery_locations, map_object) {
         var marker = new google.maps.Marker({
-            position: dataset.location,
+            position: brewery_locations.location,
             map: map_object,
-            url: dataset.url,
-            name: dataset.name
+            url: brewery_locations.url,
+            name: brewery_locations.name
         });
         return marker
     }
@@ -197,6 +230,7 @@ function initMap(locations) {
             }
         );
     });
+
 }
 
 // google.maps.event.addDomListener(window, 'load', initMap);
