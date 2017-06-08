@@ -20,6 +20,9 @@ console.log(brewery_locations);
 
 //the ID for each marker in firebase
 var currentMarkerId;
+var rating;
+
+var starRating = document.getElementById("starRating").cloneNode(true);
 
 $("#locationBtn").on("click",function(event){
     event.preventDefault();
@@ -106,7 +109,7 @@ var markers;
 
 
 // grab these from api
-/*brewery_locations = [{
+brewery_locations = [{
     location: {
         lat: 30.30,
         lng: -97.643
@@ -132,15 +135,15 @@ var markers;
         lng: -97.443
     },
     url: 'one_of_your_page.html'
-}, ]*/
+}, ]
 
 function initMap(locations) {
-    function addMarker(brewery_locations, map_object) {
+    function addMarker(dataset, map_object) {
         var marker = new google.maps.Marker({
-            position: brewery_locations.location,
+            position: dataset.location,
             map: map_object,
-            url: brewery_locations.url,
-            name: brewery_locations.name
+            url: dataset.url,
+            name: dataset.name
         });
         return marker
     }
@@ -177,6 +180,13 @@ function initMap(locations) {
                 $("#breweryInfo").css({
                     "display": "initial"
                 });
+
+                 $(".rating").on("click", function(){
+                   rating = $(".rating :checked").val();
+                   console.log(rating);
+
+                })
+
                 // turns off previous click event to not have repetitive values 
                 $("#reviewBtn").off('click');
                 $("#reviewBtn").on("click", function(event) {
@@ -186,7 +196,8 @@ function initMap(locations) {
 
                     
                     var reviewDB = {
-                        review: reviewText
+                        review: reviewText,
+                        rating: rating
                     };
                     //the .child lets you add branches 
                     database.ref()
@@ -195,7 +206,7 @@ function initMap(locations) {
                         .push(reviewDB)
                         //once data is pushed to firebase, it appends the newest review to #breweryReview
                         .then(function() {
-                            $("#breweryReview").append(reviewText + "<br>");
+                            $("#breweryReview").append(starRating + "<p>" + "\"" + reviewText + "\"" + "</p>" + "<br>");
                         })
 
                     $("#reviewText").val("");
@@ -215,7 +226,7 @@ function initMap(locations) {
                         var reviews = Object.values(data)
                         //forEach goes through the reviews array and runs the function in each of the items in reviews
                         reviews.forEach(function(reviewObj) {
-                            $("#breweryReview").append(reviewObj.review + "<br>");
+                            $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
                         })
                         
                     })
