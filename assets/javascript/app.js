@@ -63,10 +63,10 @@ function getBreweryLocationsCallPromise(lat, lng) {
         method: "GET",
     });
 }
-// https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
 
 
 function processBreweryLocationsData(promise) {
+    // https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
     promise.success(function(data) {
         var data_object = JSON.parse(data);
 
@@ -75,11 +75,12 @@ function processBreweryLocationsData(promise) {
         var results = data_object.data;
         for (var i=0; i < results.length; i++) {
 
-            // screen out "Main brewery" and undefined results
+            // screen out "Main brewery" name and 'undefined' url results
             var result = results[i];
             var brewery_name = result.name;
             var website = result.brewery.website
             if (brewery_name == 'Main Brewery' && website == undefined) {
+                // https://www.w3schools.com/jsref/jsref_continue.asp
                 continue;
             } else if (brewery_name == 'Main Brewery') {
                 var brewery_name = '';
@@ -116,9 +117,11 @@ function initMap(locations) {
             url: dataset.url,
             name: dataset.name
         });
+        // if there's a url, make the map markers clickable
         if (dataset.url) {
+            // https://stackoverflow.com/questions/8769966/google-map-api-open-url-by-clicking-at-marker
             google.maps.event.addListener(marker, 'click', function() {
-                // window.location.href = this.url;
+                // https://stackoverflow.com/questions/4907843/open-a-url-in-a-new-tab-and-not-a-new-window-using-javascript
                 var redirectWindow = window.open(dataset.url, '_blank');
                 redirectWindow.location;
             });
