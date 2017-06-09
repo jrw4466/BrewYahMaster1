@@ -75,14 +75,17 @@ function processBreweryLocationsData(promise) {
         var results = data_object.data;
         for (var i=0; i < results.length; i++) {
 
+            // screen out "Main brewery" and undefined results
+            var result = results[i];
+            // if ()
             brewery_locations[i] = {
                 location: {
-                    lat: results[i].latitude,
-                    lng: results[i].longitude
+                    lat: result.latitude,
+                    lng: result.longitude
                 },
 
-                name: results[i].name,
-                url: results[i].brewery.website
+                name: result.name,
+                url: result.brewery.website
             };
         };
         initMap();
