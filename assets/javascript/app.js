@@ -116,9 +116,11 @@ function initMap(locations) {
             url: dataset.url,
             name: dataset.name
         });
-        google.maps.event.addListener(marker, 'click', function() {
-            window.location.href = this.url;
-        });
+        if (dataset.url) {
+            google.maps.event.addListener(marker, 'click', function() {
+                window.location.href = this.url;
+            });
+        }
         return marker
     }
 
