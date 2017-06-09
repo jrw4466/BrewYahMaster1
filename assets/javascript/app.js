@@ -118,7 +118,9 @@ function initMap(locations) {
         });
         if (dataset.url) {
             google.maps.event.addListener(marker, 'click', function() {
-                window.location.href = this.url;
+                // window.location.href = this.url;
+                var redirectWindow = window.open(dataset.url, '_blank');
+                redirectWindow.location;
             });
         }
         return marker
