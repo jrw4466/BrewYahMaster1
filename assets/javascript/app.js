@@ -12,17 +12,24 @@ var database = firebase.database();
 
 var city = "";
 var state = "";
+
 var centerLat = 30.267;
 var centerLong = -97.743;
 
-var brewery_locations = [{}];
-console.log(brewery_locations);
+var center_of_austin = {
+    lat: 30.267,
+    lng: -97.743
+}
+
 
 //the ID for each marker in firebase
 var currentMarkerId;
 var rating;
+var markers;
+var brewery_locations = [{}];
 
 var starRating = document.getElementById("starRating").cloneNode(true);
+
 
 $("#locationBtn").on("click",function(event){
     event.preventDefault();
@@ -37,105 +44,57 @@ $("#locationBtn").on("click",function(event){
         method: "GET"
     }).done(function(responseGoogle){
         var googleResults = responseGoogle;
-        console.log(googleResults);
-        //console.log(googleResults.results[0].geometry.location.lat);
 
         centerLat = parseFloat(googleResults.results[0].geometry.location.lat);
         centerLong = parseFloat(googleResults.results[0].geometry.location.lng);
 
-        console.log(centerLat);
-        console.log(centerLong);
-
+        var locations = getBreweryLocations(centerLat, centerLong);
         initMap();
-        getBreweryLocations();
-        
+
     })
 })
 
 
 
-function getBreweryLocations() {
-            var queryURL = "http://127.0.0.1:3000/breweries";
+function getBreweryLocationsCallPromise(lat, lng) {
+    var queryURL = "http://127.0.0.1:3000/breweries" + "?lat=" + String(lat) + "&lng=" + String(lng);
+    return $.ajax({
+       url: queryURL,
+        method: "GET",
+    });
+}
+// https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
 
-           return $.ajax({
-               url: queryURL,
-                method: "GET",
-           });
-        }
-        // https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
-        
-        // var promise = function getBreweryLocations
-        var promise = getBreweryLocations();
-        // function getBreweryLocations success runs function data to parse into data object
-        promise.success(function(data) {
-            var data_object = JSON.parse(data);
-           console.log(data_object.data);
-           //console.log(promise);
 
-           var results = data_object.data;
-           //console.log(results);
-           for (var i=0; i < results.length; i++) {
-                console.log(results[i].latitude);
-                console.log(results[i].longitude);
-                console.log(results[i].name);
-                console.log(results[i].brewery.website);
-                //console.log(results[i].brewery.images.large);
+function processBreweryLocationsData(promise) {
+    promise.success(function(data) {
+        var data_object = JSON.parse(data);
 
-                /*var newObject = {
-                    location: {
-                        lat: results[i].latitude,
-                        lng: results[i].longitude
-                    },
+        brewery_locations = [{}];
 
-                    name: results[i].name,
-                    url: results[i].brewery.website
-                };
+        var results = data_object.data;
+        for (var i=0; i < results.length; i++) {
 
-                brewery_locations.push(newObject[i]); */
+            brewery_locations[i] = {
+                location: {
+                    lat: results[i].latitude,
+                    lng: results[i].longitude
+                },
 
-                brewery_locations[i] = {
-                    location: {
-                        lat: results[i].latitude,
-                        lng: results[i].longitude
-                    },
-
-                    name: results[i].name,
-                    url: results[i].brewery.website
-                };
+                name: results[i].name,
+                url: results[i].brewery.website
             };
-       });
+        };
+        initMap();
+    });
+}
 
-var markers;
 
+function getBreweryLocations(lat, lng) {
+    var promise = getBreweryLocationsCallPromise(lat, lng);
+    processBreweryLocationsData(promise);
+}
 
-// grab these from api
-brewery_locations = [{
-    location: {
-        lat: 30.30,
-        lng: -97.643
-    },
-    url: 'http://southaustinbrewery.com/',
-    name: "South Austin Brewery"
-}, {
-    location: {
-        lat: 30.35,
-        lng: -97.743
-    },
-    url: 'one_of_your_page.html'
-}, {
-    location: {
-        lat: 30.25,
-        lng: -97.56
-    },
-    url: 'http://www.hopsandgrain.com/',
-    name: "Hops and Grain"
-}, {
-    location: {
-        lat: 30.23,
-        lng: -97.443
-    },
-    url: 'one_of_your_page.html'
-}, ]
 
 function initMap(locations) {
     function addMarker(dataset, map_object) {
@@ -167,7 +126,7 @@ function initMap(locations) {
             marker,
             'click',
 
-            //Once you click on a marker, it gets the "e" event which contains the lat and long which is then used as the ID 
+            //Once you click on a marker, it gets the "e" event which contains the lat and long which is then used as the ID
             function(e) {
                 //Make the lat and long into a string and replace the "." with "?"
                 //lat.Lng.lat() comes from google maps API.
@@ -183,23 +142,22 @@ function initMap(locations) {
 
                  $(".rating").on("click", function(){
                    rating = $(".rating :checked").val();
-                   console.log(rating);
 
                 })
 
-                // turns off previous click event to not have repetitive values 
+                // turns off previous click event to not have repetitive values
                 $("#reviewBtn").off('click');
                 $("#reviewBtn").on("click", function(event) {
                     event.preventDefault();
 
                     var reviewText = $("#reviewText").val().trim();
 
-                    
+
                     var reviewDB = {
                         review: reviewText,
                         rating: rating
                     };
-                    //the .child lets you add branches 
+                    //the .child lets you add branches
                     database.ref()
                         .child("markers")
                         .child(currentMarkerId)
@@ -213,36 +171,27 @@ function initMap(locations) {
                 });
 
                 database.ref()
-                    .child("markers")
-                    .child(currentMarkerId)
-                    //It gets all the previous values in firebase only one time
-                    .once("value", function(childSnapshot, prevChildKey) {
-                        var data = childSnapshot.val();
-                        //if data is undefined, then dont do anything
-                        if(!data) {
-                            return;
-                        }
-                        //This gives the values of the object
-                        var reviews = Object.values(data)
-                        //forEach goes through the reviews array and runs the function in each of the items in reviews
-                        reviews.forEach(function(reviewObj) {
-                            $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
+                        .child("markers")
+                        .child(currentMarkerId)
+                        //It gets all the previous values in firebase only one time
+                        .once("value", function(childSnapshot, prevChildKey) {
+                            var data = childSnapshot.val();
+                            //if data is undefined, then dont do anything
+                            if(!data) {
+                                return;
+                            }
+                            //This gives the values of the object
+                            var reviews = Object.values(data)
+                            //forEach goes through the reviews array and runs the function in each of the items in reviews
+                            reviews.forEach(function(reviewObj) {
+                                $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
+                            });
                         })
-                        
-                    })
-                    // if(currentMarkerId) {
-                    //     // database.ref().child("markers").child(currentMarkerId).off();
-                    //     database.ref().child("markers").child(currentMarkerId).once("child_added", function(childSnapshot,prevChildKey){
-                    //         var reviewText = childSnapshot.val().review;
-
-                //         $("#breweryReview").append(reviewText + "<br>");
-                //      })
-                // }  
             }
         );
     });
 
 }
 
-// google.maps.event.addDomListener(window, 'load', initMap);
 
+var markers = getBreweryLocations(center_of_austin.lat, center_of_austin.lng)
