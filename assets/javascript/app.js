@@ -16,13 +16,13 @@ var centerLat = 30.267;
 var centerLong = -97.743;
 
 var brewery_locations = [{}];
-console.log(brewery_locations);
 
 //the ID for each marker in firebase
 var currentMarkerId;
 var rating;
 
 var starRating = document.getElementById("starRating").cloneNode(true);
+
 
 $("#locationBtn").on("click",function(event){
     event.preventDefault();
@@ -48,94 +48,78 @@ $("#locationBtn").on("click",function(event){
 
         initMap();
         getBreweryLocations();
-        
+
     })
 })
 
 
 
 function getBreweryLocations() {
-            var queryURL = "http://127.0.0.1:3000/breweries";
+    var queryURL = "http://127.0.0.1:3000/breweries";
 
-           return $.ajax({
-               url: queryURL,
-                method: "GET",
-           });
-        }
-        // https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
-        
-        // var promise = function getBreweryLocations
-        var promise = getBreweryLocations();
-        // function getBreweryLocations success runs function data to parse into data object
-        promise.success(function(data) {
-            var data_object = JSON.parse(data);
-           console.log(data_object.data);
-           //console.log(promise);
+    return $.ajax({
+       url: queryURL,
+        method: "GET",
+    });
+}
+// https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
 
-           var results = data_object.data;
-           //console.log(results);
-           for (var i=0; i < results.length; i++) {
-                console.log(results[i].latitude);
-                console.log(results[i].longitude);
-                console.log(results[i].name);
-                console.log(results[i].brewery.website);
-                //console.log(results[i].brewery.images.large);
+// var promise = function getBreweryLocations
+var promise = getBreweryLocations();
+// function getBreweryLocations success runs function data to parse into data object
+promise.success(function(data) {
+    var data_object = JSON.parse(data);
+   // console.log(data_object.data);
 
-                /*var newObject = {
-                    location: {
-                        lat: results[i].latitude,
-                        lng: results[i].longitude
-                    },
+   var results = data_object.data;
+   for (var i=0; i < results.length; i++) {
+        // console.log(results[i].latitude);
+        // console.log(results[i].longitude);
+        // console.log(results[i].name);
 
-                    name: results[i].name,
-                    url: results[i].brewery.website
-                };
+        brewery_locations[i] = {
+            location: {
+                lat: results[i].latitude,
+                lng: results[i].longitude
+            },
 
-                brewery_locations.push(newObject[i]); */
-
-                brewery_locations[i] = {
-                    location: {
-                        lat: results[i].latitude,
-                        lng: results[i].longitude
-                    },
-
-                    name: results[i].name,
-                    url: results[i].brewery.website
-                };
-            };
-       });
+            name: results[i].name,
+            url: results[i].brewery.website
+        };
+    };
+});
 
 var markers;
 
 
 // grab these from api
-brewery_locations = [{
-    location: {
-        lat: 30.30,
-        lng: -97.643
-    },
-    url: 'http://southaustinbrewery.com/',
-    name: "South Austin Brewery"
-}, {
-    location: {
-        lat: 30.35,
-        lng: -97.743
-    },
-    url: 'one_of_your_page.html'
-}, {
-    location: {
-        lat: 30.25,
-        lng: -97.56
-    },
-    url: 'http://www.hopsandgrain.com/',
-    name: "Hops and Grain"
-}, {
-    location: {
-        lat: 30.23,
-        lng: -97.443
-    },
-    url: 'one_of_your_page.html'
-}, ]
+// brewery_locations = [{
+//     location: {
+//         lat: 30.30,
+//         lng: -97.643
+//     },
+//     url: 'http://southaustinbrewery.com/',
+//     name: "South Austin Brewery"
+// }, {
+//     location: {
+//         lat: 30.35,
+//         lng: -97.743
+//     },
+//     url: 'one_of_your_page.html'
+// }, {
+//     location: {
+//         lat: 30.25,
+//         lng: -97.56
+//     },
+//     url: 'http://www.hopsandgrain.com/',
+//     name: "Hops and Grain"
+// }, {
+//     location: {
+//         lat: 30.23,
+//         lng: -97.443
+//     },
+//     url: 'one_of_your_page.html'
+// }, ]
 
 function initMap(locations) {
     function addMarker(dataset, map_object) {
@@ -167,7 +151,7 @@ function initMap(locations) {
             marker,
             'click',
 
-            //Once you click on a marker, it gets the "e" event which contains the lat and long which is then used as the ID 
+            //Once you click on a marker, it gets the "e" event which contains the lat and long which is then used as the ID
             function(e) {
                 //Make the lat and long into a string and replace the "." with "?"
                 //lat.Lng.lat() comes from google maps API.
@@ -187,19 +171,19 @@ function initMap(locations) {
 
                 })
 
-                // turns off previous click event to not have repetitive values 
+                // turns off previous click event to not have repetitive values
                 $("#reviewBtn").off('click');
                 $("#reviewBtn").on("click", function(event) {
                     event.preventDefault();
 
                     var reviewText = $("#reviewText").val().trim();
 
-                    
+
                     var reviewDB = {
                         review: reviewText,
                         rating: rating
                     };
-                    //the .child lets you add branches 
+                    //the .child lets you add branches
                     database.ref()
                         .child("markers")
                         .child(currentMarkerId)
@@ -228,7 +212,7 @@ function initMap(locations) {
                         reviews.forEach(function(reviewObj) {
                             $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
                         })
-                        
+
                     })
                     // if(currentMarkerId) {
                     //     // database.ref().child("markers").child(currentMarkerId).off();
@@ -237,7 +221,7 @@ function initMap(locations) {
 
                 //         $("#breweryReview").append(reviewText + "<br>");
                 //      })
-                // }  
+                // }
             }
         );
     });
@@ -245,4 +229,3 @@ function initMap(locations) {
 }
 
 // google.maps.event.addDomListener(window, 'load', initMap);
-
