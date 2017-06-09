@@ -77,15 +77,24 @@ function processBreweryLocationsData(promise) {
 
             // screen out "Main brewery" and undefined results
             var result = results[i];
-            // if ()
+            var brewery_name = result.name;
+            var website = result.brewery.website
+            if (brewery_name == 'Main Brewery' && website == undefined) {
+                continue;
+            } else if (brewery_name == 'Main Brewery') {
+                var brewery_name = '';
+            } else if (website == undefined) {
+                var website = '';
+            }
+
             brewery_locations[i] = {
                 location: {
                     lat: result.latitude,
                     lng: result.longitude
                 },
 
-                name: result.name,
-                url: result.brewery.website
+                name: brewery_name,
+                url: website
             };
         };
         initMap();
@@ -106,6 +115,9 @@ function initMap(locations) {
             map: map_object,
             url: dataset.url,
             name: dataset.name
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+            window.location.href = this.url;
         });
         return marker
     }
