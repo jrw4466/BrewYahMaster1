@@ -219,4 +219,3 @@ function initMap(locations) {
 }
 
 var markers = getBreweryLocations(center_of_austin.lat, center_of_austin.lng)
-
