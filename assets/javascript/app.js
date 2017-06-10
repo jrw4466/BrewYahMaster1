@@ -12,7 +12,6 @@ var database = firebase.database();
 
 var city = "";
 var state = "";
-
 var centerLat = 30.267;
 var centerLong = -97.743;
 
@@ -21,15 +20,14 @@ var center_of_austin = {
     lng: -97.743
 }
 
-
 //the ID for each marker in firebase
 var currentMarkerId;
 var rating;
 var markers;
+var idCounter = 0;
 var brewery_locations = [{}];
 
 var starRating = document.getElementById("starRating").cloneNode(true);
-
 
 $("#locationBtn").on("click",function(event){
     event.preventDefault();
@@ -50,22 +48,21 @@ $("#locationBtn").on("click",function(event){
 
         var locations = getBreweryLocations(centerLat, centerLong);
         initMap();
-
+        
     })
 })
 
 
-
 function getBreweryLocationsCallPromise(lat, lng) {
     var queryURL = "http://127.0.0.1:3000/breweries" + "?lat=" + String(lat) + "&lng=" + String(lng);
-    return $.ajax({
-       url: queryURL,
-        method: "GET",
-    });
-}
-// https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
 
-
+           return $.ajax({
+               url: queryURL,
+                method: "GET",
+           });
+        }
+        // https://stackoverflow.com/questions/5316697/jquery-return-data-after-ajax-call-success
+        
 function processBreweryLocationsData(promise) {
     promise.success(function(data) {
         var data_object = JSON.parse(data);
@@ -81,19 +78,19 @@ function processBreweryLocationsData(promise) {
                     lng: results[i].longitude
                 },
 
-                name: results[i].name,
+                name: results[i].brewery.name,
                 url: results[i].brewery.website
             };
         };
         initMap();
     });
-}
-
+}    
 
 function getBreweryLocations(lat, lng) {
     var promise = getBreweryLocationsCallPromise(lat, lng);
     processBreweryLocationsData(promise);
 }
+
 
 
 function initMap(locations) {
@@ -126,13 +123,16 @@ function initMap(locations) {
             marker,
             'click',
 
-            //Once you click on a marker, it gets the "e" event which contains the lat and long which is then used as the ID
+            //Once you click on a marker, it gets the "e" event which contains the lat and long which is then used as the ID 
             function(e) {
                 //Make the lat and long into a string and replace the "." with "?"
                 //lat.Lng.lat() comes from google maps API.
+
+                //BUG with currentMarjerId
                 currentMarkerId = JSON.stringify(e.latLng.lat() + e.latLng.lng()).replace(".", "?");
+                
                 $("#breweryReview").empty();
-                $("#breweryName").html(marker.name + "<br>" + marker.url);
+                $("#breweryName").html(marker.name + "<br>" + "<a>" + marker.url);
                 $("#initialInfo").css({
                     "display": "none"
                 });
@@ -140,58 +140,82 @@ function initMap(locations) {
                     "display": "initial"
                 });
 
-                 $(".rating").on("click", function(){
-                   rating = $(".rating :checked").val();
+                 var stars = $("#starRating").rateYo({
+                    starWidth: "18px",
+                 })
 
-                })
-
-                // turns off previous click event to not have repetitive values
+                // turns off previous click event to not have repetitive values 
                 $("#reviewBtn").off('click');
                 $("#reviewBtn").on("click", function(event) {
                     event.preventDefault();
 
                     var reviewText = $("#reviewText").val().trim();
+                    var rating = $("#starRating").rateYo("rating");
+                    $("#starRating").rateYo("rating", 0);
 
-
+                    
                     var reviewDB = {
                         review: reviewText,
                         rating: rating
                     };
-                    //the .child lets you add branches
+                    //the .child lets you add branches 
                     database.ref()
                         .child("markers")
                         .child(currentMarkerId)
                         .push(reviewDB)
                         //once data is pushed to firebase, it appends the newest review to #breweryReview
                         .then(function() {
-                            $("#breweryReview").append(starRating + "<p>" + "\"" + reviewText + "\"" + "</p>" + "<br>");
+                           var parentDiv = $("<div id=" +idCounter + ">");
+                           var stars = $("<div class=starReview>").rateYo({
+                                starWidth: "18px",
+                                rating: reviewDB.rating,
+                                readOnly: true
+                           })
+                           var review = $("<p>").text(reviewDB.review);
+                           $(parentDiv).append(stars);
+                           $(parentDiv).append(review);
+                           $("#breweryReview").append(parentDiv);
+                           idCounter += 1;
                         })
 
                     $("#reviewText").val("");
                 });
 
                 database.ref()
-                        .child("markers")
-                        .child(currentMarkerId)
-                        //It gets all the previous values in firebase only one time
-                        .once("value", function(childSnapshot, prevChildKey) {
-                            var data = childSnapshot.val();
-                            //if data is undefined, then dont do anything
-                            if(!data) {
-                                return;
-                            }
-                            //This gives the values of the object
-                            var reviews = Object.values(data)
-                            //forEach goes through the reviews array and runs the function in each of the items in reviews
-                            reviews.forEach(function(reviewObj) {
-                                $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
-                            });
-                        })
+                    .child("markers")
+                    .child(currentMarkerId)
+                    //It gets all the previous values in firebase only one time
+                    .once("value", function(childSnapshot, prevChildKey) {
+
+                        idCounter = 0;
+                        var data = childSnapshot.val();
+                        //if data is undefined, then dont do anything
+                        if(!data) {
+                            return;
+                        }
+                        //This gives the values of the object
+                        var reviews = Object.values(data)
+                        //forEach goes through the reviews array and runs the function in each of the items in reviews
+                        reviews.forEach(function(reviewObj) {
+                            var parentDiv = $("<div id=" +idCounter + ">");
+                           var stars = $("<div class=starReview>").rateYo({
+                                starWidth: "18px",
+                                rating: reviewObj.rating,
+                                readOnly: true
+                           })
+                           var review = $("<p>").text(reviewObj.review);
+                           $(parentDiv).append(stars);
+                           $(parentDiv).append(review);
+                           $("#breweryReview").append(parentDiv);
+                           idCounter += 1;
+                        });
+                        
+                    });
+                    
             }
         );
     });
 
 }
-
 
 var markers = getBreweryLocations(center_of_austin.lat, center_of_austin.lng)
