@@ -132,7 +132,7 @@ function initMap(locations) {
                 currentMarkerId = JSON.stringify(e.latLng.lat() + e.latLng.lng()).replace(".", "?");
                 
                 $("#breweryReview").empty();
-                $("#breweryName").html(marker.name + "<br>" + "<a>" + marker.url);
+                $("#breweryName").html(marker.name + "<br>" + "<a href=\"" + marker.url + "\"" + "target=\"_blank\"" + ">" + marker.url + "</a>");
                 $("#initialInfo").css({
                     "display": "none"
                 });
