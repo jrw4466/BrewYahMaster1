@@ -13,13 +13,9 @@ var center_of_austin = {
     lng: -97.743
 }
 
-
 function generateBrewAPIUrl(lat, lng) {
     return "https://api.brewerydb.com/v2/search/geo/point/?lat=" + lat + "&lng=" + lng + "&key=52840d61aed0d4d4dc14a975bf3092c4&format=json";
 }
-
-// var BREW_API_URL = "https://api.brewerydb.com/v2/search/geo/point/?lat=" + centerLat + "&lng=" + centerLong + "&key=52840d61aed0d4d4dc14a975bf3092c4&format=json";
-
 
 
 app.get('/', function(req, res, next) {
@@ -53,6 +49,7 @@ app.get('/breweries', function(req, res, next) {
           res.send(error);
       }
     });
+
 })
 
 // required if you wanna serve a file
