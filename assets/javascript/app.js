@@ -82,7 +82,6 @@ function processBreweryLocationsData(promise) {
             };
         };
         initMap();
-        console.log(brewery_locations);
     });
 }    
 
@@ -127,9 +126,12 @@ function initMap(locations) {
             function(e) {
                 //Make the lat and long into a string and replace the "." with "?"
                 //lat.Lng.lat() comes from google maps API.
+
+                //BUG with currentMarjerId
                 currentMarkerId = JSON.stringify(e.latLng.lat() + e.latLng.lng()).replace(".", "?");
+                
                 $("#breweryReview").empty();
-                $("#breweryName").html(marker.name + "<br>" + marker.url);
+                $("#breweryName").html(marker.name + "<br>" + "<a>" + marker.url);
                 $("#initialInfo").css({
                     "display": "none"
                 });
