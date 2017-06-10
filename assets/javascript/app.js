@@ -24,6 +24,7 @@ var center_of_austin = {
 var currentMarkerId;
 var rating;
 var markers;
+var idCounter = 0;
 var brewery_locations = [{}];
 
 var starRating = document.getElementById("starRating").cloneNode(true);
@@ -139,11 +140,9 @@ function initMap(locations) {
                     "display": "initial"
                 });
 
-                 $(".rating").on("click", function(){
-                   rating = $(".rating :checked").val();
-                   console.log(rating);
-
-                })
+                 var stars = $("#starRating").rateYo({
+                    starWidth: "18px",
+                 })
 
                 // turns off previous click event to not have repetitive values 
                 $("#reviewBtn").off('click');
@@ -151,6 +150,8 @@ function initMap(locations) {
                     event.preventDefault();
 
                     var reviewText = $("#reviewText").val().trim();
+                    var rating = $("#starRating").rateYo("rating");
+                    $("#starRating").rateYo("rating", 0);
 
                     
                     var reviewDB = {
@@ -164,7 +165,17 @@ function initMap(locations) {
                         .push(reviewDB)
                         //once data is pushed to firebase, it appends the newest review to #breweryReview
                         .then(function() {
-                            $("#breweryReview").append(starRating + "<p>" + "\"" + reviewText + "\"" + "</p>" + "<br>");
+                           var parentDiv = $("<div id=" +idCounter + ">");
+                           var stars = $("<div class=starReview>").rateYo({
+                                starWidth: "18px",
+                                rating: reviewDB.rating,
+                                readOnly: true
+                           })
+                           var review = $("<p>").text(reviewDB.review);
+                           $(parentDiv).append(stars);
+                           $(parentDiv).append(review);
+                           $("#breweryReview").append(parentDiv);
+                           idCounter += 1;
                         })
 
                     $("#reviewText").val("");
@@ -175,6 +186,8 @@ function initMap(locations) {
                     .child(currentMarkerId)
                     //It gets all the previous values in firebase only one time
                     .once("value", function(childSnapshot, prevChildKey) {
+
+                        idCounter = 0;
                         var data = childSnapshot.val();
                         //if data is undefined, then dont do anything
                         if(!data) {
@@ -184,7 +197,17 @@ function initMap(locations) {
                         var reviews = Object.values(data)
                         //forEach goes through the reviews array and runs the function in each of the items in reviews
                         reviews.forEach(function(reviewObj) {
-                            $("#breweryReview").append(document.getElementById("starRating").innerHTML + "<br>" + "<p>" + "\"" + reviewObj.review + "\"" +"</p>" + "<br>");
+                            var parentDiv = $("<div id=" +idCounter + ">");
+                           var stars = $("<div class=starReview>").rateYo({
+                                starWidth: "18px",
+                                rating: reviewObj.rating,
+                                readOnly: true
+                           })
+                           var review = $("<p>").text(reviewObj.review);
+                           $(parentDiv).append(stars);
+                           $(parentDiv).append(review);
+                           $("#breweryReview").append(parentDiv);
+                           idCounter += 1;
                         });
                         
                     });
